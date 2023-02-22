@@ -47,3 +47,44 @@ function startGame() {
     });
 }
 
+btnUp.addEventListener('click', moveUp);
+btnLeft.addEventListener('click', moveLeft);
+btnRight.addEventListener('click', moveRight);
+btnDown.addEventListener('click', moveDown);
+
+function moveUp() {
+    console.log("Going up");
+}
+
+function moveLeft() {
+    console.log("Going left");
+}
+
+function moveRight() {
+    console.log("Going right");
+}
+
+function moveDown() {
+    console.log("Going down");
+}
+
+window.addEventListener('keydown', (e) => {
+    let tecla = e.key;
+
+    switch (tecla) {
+        case "ArrowUp":
+            moveUp();
+            break;
+        case "ArrowDown":
+            moveDown();
+            break;
+        case "ArrowLeft":
+            moveLeft();
+            break;
+        case "ArrowRight":
+            moveRight();
+            break;
+        default:
+            break;
+    }
+})
