@@ -7,6 +7,17 @@ const btnRight = document.querySelector('#right');
 
 let canvasSize;
 let elementsSize;
+let enemyPositions = [];
+let level = 0;
+
+window.addEventListener('load', setCanvasSize);
+window.addEventListener('resize', setCanvasSize);
+window.addEventListener('keydown', moveByKeys);
+
+btnUp.addEventListener('click', moveUp);
+btnLeft.addEventListener('click', moveLeft);
+btnRight.addEventListener('click', moveRight);
+btnDown.addEventListener('click', moveDown);
 
 const playerPosition = {
     x: undefined,
@@ -16,15 +27,10 @@ const giftPosition = {
     x: undefined,
     y: undefined,
 }
-
 const doorPosition = {
     x: undefined,
     y: undefined,
 }
-
-window.addEventListener('load', setCanvasSize);
-window.addEventListener('resize', setCanvasSize);
-
 
 function setCanvasSize() {
     if (window.innerHeight > window.innerWidth) {
@@ -50,10 +56,18 @@ function startGame() {
     game.font = elementsSize + 'px Verdana';
     game.textAlign = 'end';
 
-    const map = maps[0];
+    const map = maps[level];
+
+    if (!map) {
+        gameWin();
+        return;
+    }
+
     const mapRows = map.trim().split('\n');
     const mapRowCols = mapRows.map(row => row.trim().split(''));
     console.log({map, mapRows, mapRowCols});
+
+    enemyPositions = [];
 
     game.clearRect(0, 0, canvasSize, canvasSize);
     mapRowCols.forEach((row, rowIndex) => {
@@ -71,6 +85,11 @@ function startGame() {
             } else if (col == 'I') {
                 giftPosition.x = posX;
                 giftPosition.y = posY;
+            } else if (col == 'X') {
+                enemyPositions.push({
+                    x: posX,
+                    y: posY,
+                })
             }
 
             game.fillText(emoji, posX, posY);
@@ -86,17 +105,31 @@ function movePlayer() {
     const giftCollision = giftCollisionX && giftCollisionY;
 
     if (giftCollision) {
-        console.log("Next level!");
+        levelWin();
+    }
+
+    const enemyCollision = enemyPositions.find(enemy => {
+        const enemyCollisionX = enemy.x == playerPosition.x;
+        const enemyCollisionY = enemy.y == playerPosition.y;
+        return enemyCollisionX && enemyCollisionY;
+    });
+
+    if (enemyCollision) {
+        console.log('Enemy Detected! :(');
     }
 
     game.fillText(emojis['PLAYER'], playerPosition.x, playerPosition.y);
 }
 
-window.addEventListener('keydown', moveByKeys);
-btnUp.addEventListener('click', moveUp);
-btnLeft.addEventListener('click', moveLeft);
-btnRight.addEventListener('click', moveRight);
-btnDown.addEventListener('click', moveDown);
+function levelWin() {
+    console.log("Level up");
+    level++;
+    startGame();
+}
+
+function gameWin() {
+    console.log("You won the game!");
+}
 
 function moveByKeys(event) {
     let tecla = event.key;
