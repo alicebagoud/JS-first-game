@@ -9,15 +9,7 @@ let canvasSize;
 let elementsSize;
 let enemyPositions = [];
 let level = 0;
-
-window.addEventListener('load', setCanvasSize);
-window.addEventListener('resize', setCanvasSize);
-window.addEventListener('keydown', moveByKeys);
-
-btnUp.addEventListener('click', moveUp);
-btnLeft.addEventListener('click', moveLeft);
-btnRight.addEventListener('click', moveRight);
-btnDown.addEventListener('click', moveDown);
+let lives = 3;
 
 const playerPosition = {
     x: undefined,
@@ -105,7 +97,7 @@ function movePlayer() {
     const giftCollision = giftCollisionX && giftCollisionY;
 
     if (giftCollision) {
-        levelWin();
+        levelFail();
     }
 
     const enemyCollision = enemyPositions.find(enemy => {
@@ -127,9 +119,36 @@ function levelWin() {
     startGame();
 }
 
+function levelFail() {
+    console.log("Enemy found :(");
+    lives--;
+    
+    console.log(lives);
+
+    if (lives <= 0) {
+        level = 0;
+        lives = 3;
+    }
+
+    playerPosition.x = undefined;
+    playerPosition.y = undefined;    
+    startGame();
+}
+
 function gameWin() {
     console.log("You won the game!");
 }
+
+// Move By Keyboard
+
+window.addEventListener('load', setCanvasSize);
+window.addEventListener('resize', setCanvasSize);
+window.addEventListener('keydown', moveByKeys);
+
+btnUp.addEventListener('click', moveUp);
+btnLeft.addEventListener('click', moveLeft);
+btnRight.addEventListener('click', moveRight);
+btnDown.addEventListener('click', moveDown);
 
 function moveByKeys(event) {
     let tecla = event.key;
